@@ -1,26 +1,32 @@
-## Trekkie — Pebble Watchface
+## Trekkie — Pebble Watchface
 
 ![Image](http://i.imgur.com/jEKDxnH.jpg)
 
 An LCARS-inspired Pebble watchface. Swanky.
 
-NOTE: I forked this from remixz in order to make a couple of minor mods.  The month number has been added to the date line, I've removed the leading 0 when in 12h time, and I added a little am/pm below the time as appropriate.
+Forked from [remixz/trekkie](https://github.com/remixz/trekkie) with a few display tweaks:
+- Month number added to the date line
+- No leading zero in 12h time
+- am/pm indicator below the time
 
-*I hold no responsibility if this breaks your Pebble! This is built using the early Proof of Concept SDK, and may be unstable.* I use it on my Pebble without issues though. :smile:
+Modernized from the original Proof of Concept SDK to the current pebble-tool / SDK 4.x workflow.
+
+### Requirements
+
+- [pebble-tool](https://github.com/pebble/pebble-tool) v5+
+- Pebble SDK 4.x
 
 ### Building
 
-Because remembering paths is a pain, I've set up a Makefile to do that for you. Make sure to clone this watch into the proper directory:
-
 ```
-git clone https://github.com/remixz/trekkie.git /path/to/pebble-sdk/watches/trekkie
-cd trekkie
-make setup
+pebble build
 ```
 
-Then, to build, just run:
+### Installing
+
 ```
-make build
+pebble install --emulator basalt    # Run in basalt emulator
+pebble install --cloudpebble        # Deploy to phone via rePebble app
 ```
 
-Installing it on your Pebble is a bit more of an adventure. I install it using [`libpebble`](https://github.com/pebble/libpebble). If you are on Android, you can also serve the .pbw on a web-server and download it.
+The built `.pbw` bundle is at `build/trekkie.pbw` and can also be sideloaded directly.

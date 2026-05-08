@@ -1,0 +1,44 @@
+{
+  "name": "trekkie",
+  "author": "Zach Bruggeman",
+  "version": "1.1.0",
+  "keywords": ["pebble-app"],
+  "private": true,
+  "dependencies": {},
+  "pebble": {
+    "displayName": "Trekkie LCARS Watchface",
+    "uuid": "3f88a0d5-831e-4f15-8742-13bc4253690c",
+    "sdkVersion": "3",
+    "targetPlatforms": ["aplite", "basalt"],
+    "watchapp": {
+      "watchface": true
+    },
+    "messageKeys": [],
+    "resources": {
+      "media": [
+        {
+          "type": "bitmap",
+          "name": "IMAGE_MENU_ICON",
+          "file": "images/icon.png",
+          "menuIcon": true
+        },
+        {
+          "type": "bitmap",
+          "name": "IMAGE_BACKGROUND",
+          "file": "images/background.png"
+        },
+        {
+          "type": "font",
+          "name": "FONT_LCARS_60",
+          "file": "fonts/LCARS.ttf",
+          "characterRegex": "[: 0-9]"
+        },
+        {
+          "type": "font",
+          "name": "FONT_LCARS_BOLD_17",
+          "file": "fonts/LCARS_BOLD.TTF"
+        }
+      ]
+    }
+  }
+}
