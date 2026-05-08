@@ -6,7 +6,15 @@
   "versionLabel": "1.1",
   "versionCode": 1,
   "sdkVersion": "3",
-  "targetPlatforms": ["aplite", "basalt"],
+  "targetPlatforms": [
+    "flint",
+    "emery",
+    "diorite",
+    "chalk",
+    "basalt",
+    "aplite",
+    "gabbro"
+  ],
   "watchapp": {
     "watchface": true
   },
