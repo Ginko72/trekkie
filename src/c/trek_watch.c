@@ -12,10 +12,37 @@
  *   - Window lifecycle split into load/unload handlers
  *   - Tick handler uses struct tm directly (no AppContextRef)
  *   - Entry point is main() / app_event_loop() / deinit()
- *   - Resource metadata moved to appinfo.json
+ *   - Resource metadata moved to package.json
  */
 
 #include <pebble.h>
+
+/* ---------- Layout ---------- */
+
+typedef struct {
+  GRect date_rect;
+  GRect time_rect;
+  GRect ampm_rect;
+} LayoutConfig;
+
+static void layout_config_init(LayoutConfig *cfg, GRect bounds) {
+  /* Compile-time constants tied to the background artwork.
+     emery (200x228): x/y proportionally scaled from 144x168 originals. */
+#if PBL_DISPLAY_WIDTH >= 200
+  int x_chrome = 56, x_date = 88, y_date = 7;
+#else
+  int x_chrome = 40, x_date = 64, y_date = 5;
+#endif
+
+  /* The 60pt LCARS font renders at ~68px cap height.
+     Centre the time on screen; anchor am/pm just below it. */
+  int time_y    = bounds.size.h / 2 - 34;
+  int content_w = bounds.size.w - x_chrome;
+
+  cfg->date_rect = GRect(x_date,   y_date,         bounds.size.w - x_date, time_y - y_date);
+  cfg->time_rect = GRect(x_chrome, time_y,          content_w,              68);
+  cfg->ampm_rect = GRect(x_chrome, time_y + 68 + 4, content_w,              22);
+}
 
 /* ---------- Module-level state ---------- */
 
@@ -25,6 +52,7 @@ static GBitmap     *s_background_bitmap;
 static TextLayer   *s_date_layer;
 static TextLayer   *s_time_layer;
 static TextLayer   *s_ampm_layer;
+static LayoutConfig s_layout;
 
 /* ---------- Display logic ---------- */
 
@@ -68,33 +96,40 @@ static void tick_handler(struct tm *tick_time, TimeUnits units_changed) {
 /* ---------- Window lifecycle ---------- */
 
 static void window_load(Window *window) {
-  Layer *root = window_get_root_layer(window);
-  GRect bounds = layer_get_bounds(root);
+  Layer *root   = window_get_root_layer(window);
+  GRect  bounds = layer_get_bounds(root);
 
-  /* Background */
+  layout_config_init(&s_layout, bounds);
+
+  /* Background — platform-specific image, sized to fill the screen */
+#if PBL_DISPLAY_WIDTH >= 200
+  s_background_bitmap = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_BACKGROUND_EMERY);
+#else
   s_background_bitmap = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_BACKGROUND);
-  s_background_layer  = bitmap_layer_create(bounds);
+#endif
+  s_background_layer = bitmap_layer_create(bounds);
   bitmap_layer_set_bitmap(s_background_layer, s_background_bitmap);
   layer_add_child(root, bitmap_layer_get_layer(s_background_layer));
 
-  /* Date layer — top-right, small bold font */
-  s_date_layer = text_layer_create(GRect(78, 5, bounds.size.w - 78, bounds.size.h - 5));
+  /* Date layer — top area, small bold font, centred within the background slot */
+  s_date_layer = text_layer_create(s_layout.date_rect);
   text_layer_set_text_color(s_date_layer, GColorWhite);
   text_layer_set_background_color(s_date_layer, GColorClear);
+  text_layer_set_text_alignment(s_date_layer, GTextAlignmentCenter);
   text_layer_set_font(s_date_layer,
     fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_LCARS_BOLD_17)));
   layer_add_child(root, text_layer_get_layer(s_date_layer));
 
-  /* Time layer — large LCARS digits */
-  s_time_layer = text_layer_create(GRect(40, 48, bounds.size.w - 40, bounds.size.h - 48));
+  /* Time layer — large LCARS digits, vertically centred */
+  s_time_layer = text_layer_create(s_layout.time_rect);
   text_layer_set_text_color(s_time_layer, GColorWhite);
   text_layer_set_background_color(s_time_layer, GColorClear);
   text_layer_set_font(s_time_layer,
     fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_LCARS_60)));
   layer_add_child(root, text_layer_get_layer(s_time_layer));
 
-  /* AM/PM layer — small bold, below time */
-  s_ampm_layer = text_layer_create(GRect(40, 105, bounds.size.w - 40, bounds.size.h - 105));
+  /* AM/PM layer — small bold, anchored below time */
+  s_ampm_layer = text_layer_create(s_layout.ampm_rect);
   text_layer_set_text_color(s_ampm_layer, GColorWhite);
   text_layer_set_background_color(s_ampm_layer, GColorClear);
   text_layer_set_font(s_ampm_layer,

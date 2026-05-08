@@ -9,7 +9,7 @@
     "displayName": "Trekkie LCARS Watchface",
     "uuid": "3f88a0d5-831e-4f15-8742-13bc4253690c",
     "sdkVersion": "3",
-    "targetPlatforms": ["aplite", "basalt"],
+    "targetPlatforms": ["aplite", "basalt", "diorite", "flint", "emery"],
     "watchapp": {
       "watchface": true
     },
@@ -25,7 +25,14 @@
         {
           "type": "bitmap",
           "name": "IMAGE_BACKGROUND",
-          "file": "images/background.png"
+          "file": "images/background.png",
+          "targetPlatforms": ["aplite", "basalt", "diorite", "flint"]
+        },
+        {
+          "type": "bitmap",
+          "name": "IMAGE_BACKGROUND_EMERY",
+          "file": "images/background_emery.png",
+          "targetPlatforms": ["emery"]
         },
         {
           "type": "font",
