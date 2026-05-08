@@ -1,0 +1,40 @@
+{
+  "uuid": "3f88a0d5-831e-4f15-8742-13bc4253690c",
+  "shortName": "Trekkie",
+  "longName": "Trekkie LCARS Watchface",
+  "companyName": "Zach Bruggeman",
+  "versionLabel": "1.1",
+  "versionCode": 1,
+  "sdkVersion": "3",
+  "targetPlatforms": ["aplite", "basalt"],
+  "watchapp": {
+    "watchface": true
+  },
+  "appKeys": {},
+  "resources": {
+    "media": [
+      {
+        "type": "bitmap",
+        "name": "IMAGE_MENU_ICON",
+        "file": "images/icon.png",
+        "menuIcon": true
+      },
+      {
+        "type": "bitmap",
+        "name": "IMAGE_BACKGROUND",
+        "file": "images/background.png"
+      },
+      {
+        "type": "font",
+        "name": "FONT_LCARS_60",
+        "file": "fonts/LCARS.ttf",
+        "characterRegex": "[: 0-9]"
+      },
+      {
+        "type": "font",
+        "name": "FONT_LCARS_BOLD_17",
+        "file": "fonts/LCARS_BOLD.TTF"
+      }
+    ]
+  }
+}
