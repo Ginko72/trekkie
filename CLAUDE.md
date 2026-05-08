@@ -7,17 +7,20 @@ no leading zero in 12h time, am/pm indicator below the time.
 Modernized from the original PoC SDK structure to SDK 4.3 / pebble-tool workflow.
 
 ## Architecture
-- Single C source file: `src/trek_watch.c`
+- Single C source file: `src/c/trek_watch.c`
 - Resources: LCARS TTF fonts + PNG background/icon in `resources/`
-- Project metadata and resource manifest: `appinfo.json`
-- Build system: `pebble build` via pebble-tool (SDK 4.3)
+- Project metadata and resource manifest: `package.json` (pebble config under `"pebble"` key)
+- Build script: `wscript` (waf-based, required by pebble-tool v5)
+- Build system: `pebble build` via pebble-tool (SDK 4.x)
 
 ## Project Structure
 ```
 trekkie/
-  appinfo.json          # Project metadata, resource manifest, UUID
+  package.json          # Project metadata, resource manifest, UUID (pebble-tool v5 format)
+  wscript               # Waf build script (required by pebble-tool v5)
   src/
-    trek_watch.c        # All watchface logic
+    c/
+      trek_watch.c      # All watchface logic
   resources/
     fonts/
       LCARS.ttf         # 60pt LCARS time font
@@ -25,7 +28,8 @@ trekkie/
     images/
       background.png    # LCARS background (144x168)
       icon.png          # App menu icon
-  archive/              # Pre-modernization artifacts (PoC SDK era)
+  archive/              # Pre-modernization artifacts
+    appinfo.json        # Old project format (replaced by package.json)
     Makefile
     resources/
       resource_map.json
@@ -51,7 +55,7 @@ pebble install --cloudpebble        # Deploy to phone via rePebble app
 | Old (PoC)                          | New (SDK 4.x)                              |
 |------------------------------------|--------------------------------------------|
 | #include "pebble_os.h" etc.        | #include <pebble.h>                        |
-| PBL_APP_INFO(...) macro            | appinfo.json                               |
+| PBL_APP_INFO(...) macro            | package.json (pebble key)                  |
 | Stack-allocated Window window      | Heap  Window *s_window = window_create()   |
 | Stack-allocated TextLayer          | Heap  TextLayer *s_x = text_layer_create() |
 | BmpContainer                       | GBitmap + BitmapLayer                      |
